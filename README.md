@@ -1,0 +1,116 @@
+# kitty-starter
+
+> A flying, jumping, rainbow-cycling cursor trail for the [kitty](https://sw.kovidgoyal.net/kitty/) terminal — plus a documented starter `kitty.conf`.
+
+[![CI](https://github.com/oleg-koval/kitty-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/oleg-koval/kitty-starter/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/kitty-starter.svg)](https://pypi.org/project/kitty-starter/)
+
+## Features
+
+- **Flying cursor trail** — kitty's built-in `cursor_trail` animation, pre-tuned and fully commented.
+- **Rainbow cycling** — kitty only supports one static trail color; `rainbow-trail` sweeps it through
+  the full hue wheel in real time by hot-reloading kitty's config several times a second.
+- **Fully customizable** — every knob (speed, fade timing, hue speed, static color, on/off) is
+  documented below with copy-paste examples.
+- **Toggle keybinding** — flip the rainbow effect on/off with `ctrl+shift+r` out of the box.
+
+## Installation
+
+```bash
+uv tool install kitty-starter
+# or
+pip install kitty-starter
+```
+
+Then copy `kitty.conf` into `~/.config/kitty/` (or `include` it from your existing config):
+
+```bash
+cp kitty.conf ~/.config/kitty/kitty.conf
+kitty +kitten themes  # optional: pick a color theme, doesn't affect the trail
+```
+
+## Quick Start
+
+1. Reload kitty (`ctrl+shift+F5` or restart it) so `allow_remote_control`, `listen_on`, and the
+   `include rainbow-trail-override.conf` line take effect.
+2. Press `ctrl+shift+r` to start the rainbow cycle, press it again to stop.
+3. Or drive it from a terminal: `rainbow-trail start`.
+
+## Configuration
+
+| Setting | Where | Effect |
+|---|---|---|
+| `cursor_trail <ms>` | `kitty.conf` | Stillness (ms) before the trail catches up. Lower = snappier. `0` disables the trail. |
+| `cursor_trail_decay <in> <out>` | `kitty.conf` | Fade-in / fade-out timing in seconds. |
+| `cursor_trail_start_threshold <cells>` | `kitty.conf` | Minimum cells moved before the trail animates; skips single-character typing. |
+| `cursor_trail_color <hex\|none>` | `kitty.conf` | Static trail color used when rainbow mode is off. |
+| `--speed <deg/s>` | `rainbow-trail` CLI | How fast the hue wheel spins. Default `30`. |
+| `--interval <seconds>` | `rainbow-trail` CLI | How often the color updates. Default `0.05` (20fps). |
+| `--to <socket>` | `rainbow-trail` CLI | kitty remote-control target, if not using the default `listen_on`. |
+
+Disable the trail entirely: set `cursor_trail 0`. Disable only the rainbow cycling and keep a solid
+color: run `rainbow-trail stop` and set `cursor_trail_color` to whatever hex value you like.
+
+## Commands
+
+```bash
+rainbow-trail start                    # run the rainbow cycle in the foreground
+rainbow-trail start --speed 90         # spin 3x faster
+rainbow-trail start --interval 0.1     # update 10fps instead of 20fps
+rainbow-trail stop                     # stop a running cycle, restore the static color
+rainbow-trail toggle                   # start if stopped, stop if running (bound to ctrl+shift+r)
+```
+
+## System Requirements
+
+- kitty >= 0.36 (for `cursor_trail`)
+- Python >= 3.12
+- `allow_remote_control` enabled in `kitty.conf` (shipped in this repo's `kitty.conf`)
+
+## Architecture
+
+- `color_wheel.py` — pure function: elapsed time + speed → hex color. Zero I/O, fully unit tested.
+- `kitty_remote.py` — the only side-effecting module: writes the override conf file and calls
+  `kitty @ load-config` over the remote-control socket.
+- `cli.py` — orchestrates the two above in a loop, plus pidfile-based `start`/`stop`/`toggle`.
+
+## Security Notes
+
+The remote-control socket (`listen_on unix:/tmp/kitty-rainbow-trail`) is local-only (a Unix domain
+socket) and only accepts `load-config`-class commands from this kitten. See [SECURITY.md](./SECURITY.md).
+
+## Development
+
+Requires [uv](https://docs.astral.sh/uv/) (one-time install):
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh   # macOS / Linux
+# or: brew install uv
+```
+
+Then:
+
+```bash
+uv sync                  # install deps + create .venv
+uv run pytest            # run tests
+uv run ruff check --fix  # lint
+uv run ruff format       # format
+uv run ty check          # type-check
+```
+
+## Contributing
+
+PRs welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) and [AGENTS.md](./AGENTS.md).
+
+## Other starters
+
+Part of a set with shared conventions (AGENTS.md, Conventional Commits, MIT, GitHub Actions CI, Dependabot):
+
+- [`ts-npm-starter`](https://github.com/oleg-koval/ts-npm-starter) - TypeScript / Node
+- [`py-starter`](https://github.com/oleg-koval/py-starter) - Python (uv + ruff + ty)
+- [`go-starter`](https://github.com/oleg-koval/go-starter) - Go (standard layout + golangci-lint)
+- [`kitty-starter`](https://github.com/oleg-koval/kitty-starter) - kitty terminal config - this repo
+
+## License
+
+MIT - see [LICENSE](./LICENSE).
