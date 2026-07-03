@@ -1,9 +1,21 @@
-# kitty-starter
+<p align="center">
+  <a href="https://github.com/oleg-koval/kitty-starter/actions/workflows/ci.yml"><img src="https://github.com/oleg-koval/kitty-starter/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/python-3.12%20%7C%203.13-blue.svg" alt="Python 3.12 | 3.13">
+</p>
 
-> A flying, jumping, rainbow-cycling cursor trail for the [kitty](https://sw.kovidgoyal.net/kitty/) terminal — plus a documented starter `kitty.conf`.
+<p align="center">
+  <img src="./logo.svg" width="120" height="120" alt="kitty-starter icon: a terminal cursor block leading a rainbow comet trail">
+</p>
 
-[![CI](https://github.com/oleg-koval/kitty-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/oleg-koval/kitty-starter/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/kitty-starter.svg)](https://pypi.org/project/kitty-starter/)
+<h1 align="center">kitty-starter</h1>
+
+<p align="center">
+  A flying, jumping, rainbow-cycling cursor trail for the <a href="https://sw.kovidgoyal.net/kitty/">kitty</a> terminal<br>
+  <strong>plus a documented starter <code>kitty.conf</code></strong>
+</p>
+
+---
 
 ## Features
 
@@ -16,10 +28,12 @@
 
 ## Installation
 
+Not yet published to PyPI — install straight from GitHub:
+
 ```bash
-uv tool install kitty-starter
+uv tool install git+https://github.com/oleg-koval/kitty-starter
 # or
-pip install kitty-starter
+pip install git+https://github.com/oleg-koval/kitty-starter
 ```
 
 Then copy `kitty.conf` into `~/.config/kitty/` (or `include` it from your existing config):
@@ -74,6 +88,10 @@ rainbow-trail toggle                   # start if stopped, stop if running (boun
   `kitty @ load-config` over the remote-control socket.
 - `cli.py` — orchestrates the two above in a loop, plus pidfile-based `start`/`stop`/`toggle`.
 
+## Project Status
+
+Early / actively developed. Not yet published to PyPI. See [CHANGELOG.md](./CHANGELOG.md).
+
 ## Security Notes
 
 The remote-control socket (`listen_on unix:/tmp/kitty-rainbow-trail`) is local-only (a Unix domain
@@ -100,7 +118,8 @@ uv run ty check          # type-check
 
 ## Contributing
 
-PRs welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) and [AGENTS.md](./AGENTS.md).
+PRs welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md), [AGENTS.md](./AGENTS.md), and
+[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
 
 ## Other starters
 
@@ -114,3 +133,16 @@ Part of a set with shared conventions (AGENTS.md, Conventional Commits, MIT, Git
 ## License
 
 MIT - see [LICENSE](./LICENSE).
+
+## Author
+
+[Oleg Koval](https://github.com/oleg-koval)
+
+---
+
+<p align="center">
+  <a href="https://github.com/oleg-koval/kitty-starter">GitHub</a> ·
+  <a href="./README.md">README</a> ·
+  <a href="https://github.com/oleg-koval/kitty-starter/releases">Releases</a> ·
+  <a href="https://github.com/oleg-koval/kitty-starter/issues">Issues</a>
+</p>
